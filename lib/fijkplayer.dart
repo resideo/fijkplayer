@@ -42,5 +42,6 @@ part 'core/fijkview.dart';
 part 'core/fijkvol.dart';
 part 'ui/panel.dart';
 part 'ui/panel2.dart';
+part 'ui/panel3.dart';
 part 'ui/slider.dart';
 part 'ui/volume.dart';
