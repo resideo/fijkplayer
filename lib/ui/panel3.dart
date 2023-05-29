@@ -204,17 +204,13 @@ class __FijkPanel3State extends State<_FijkPanel3> {
 
     bool fullScreen = player.value.fullScreen;
     Widget centerWidget = Container(
-      color: Color(0xFFFFFFFF),
-    );
-
-    Widget centerChild = Container(
-      color: Color(0xFFFFFFFF),
+      color: Color(0x00000000),
     );
 
     if (fullScreen) {
       centerWidget = Row(
         children: <Widget>[
-          Expanded(child: centerChild),
+          Expanded(child: Container()),
           Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 8),
             child: Column(
