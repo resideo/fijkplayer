@@ -316,6 +316,8 @@ class _FijkViewState extends State<FijkView> {
       } else {
         await FijkPlugin.setOrientationLandscape();
       }
+    } else {
+      setState(() {});
     }
   }
 

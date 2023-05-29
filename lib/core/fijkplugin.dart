@@ -54,8 +54,7 @@ class FijkPlugin {
     if (isDesktop()) return Future.value(false);
     // ios crash Supported orientations has no common orientation with the application
     bool? changed = await _channel.invokeMethod("setOrientationPortrait");
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Future.value(changed);
   }
 
