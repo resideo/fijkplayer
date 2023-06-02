@@ -29,11 +29,11 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final bool doubleTap = true,
   final bool snapShot = false,
   final VoidCallback? onBack,
-  final VoidCallback? onAlarmTapped,
-  final VoidCallback? onRecordPressed,
-  final VoidCallback? onPushToTalkStart,
-  final VoidCallback? onPushToTalkEnd,
-  final VoidCallback? onSnapShotTapped,
+  final Widget? liveLabel,
+  final Widget? alarmIcon,
+  final Widget? pushToTalkIcon,
+  final Widget? recordIcon,
+  final Widget? snapshotIcon,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -42,11 +42,11 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       player: player,
       data: data,
       onBack: onBack,
-      onAlarmTapped: onAlarmTapped,
-      onRecordPressed: onRecordPressed,
-      onPushToTalkStart: onPushToTalkStart,
-      onPushToTalkEnd: onPushToTalkEnd,
-      onSnapShotTapped: onSnapShotTapped,
+      liveLabel: liveLabel,
+      alarmIcon: alarmIcon,
+      recordIcon: recordIcon,
+      snapshotIcon: snapshotIcon,
+      pushToTalkIcon: pushToTalkIcon,
       viewSize: viewSize,
       texPos: texturePos,
       fill: fill,
@@ -61,11 +61,11 @@ class _FijkPanel3 extends StatefulWidget {
   final FijkPlayer player;
   final FijkData data;
   final VoidCallback? onBack;
-  final VoidCallback? onAlarmTapped;
-  final VoidCallback? onPushToTalkStart;
-  final VoidCallback? onPushToTalkEnd;
-  final VoidCallback? onRecordPressed;
-  final VoidCallback? onSnapShotTapped;
+  final Widget? liveLabel;
+  final Widget? alarmIcon;
+  final Widget? pushToTalkIcon;
+  final Widget? recordIcon;
+  final Widget? snapshotIcon;
   final Size viewSize;
   final Rect texPos;
   final bool fill;
@@ -79,11 +79,11 @@ class _FijkPanel3 extends StatefulWidget {
       required this.data,
       this.fill = false,
       this.onBack,
-      this.onAlarmTapped,
-      this.onRecordPressed,
-      this.onPushToTalkStart,
-      this.onPushToTalkEnd,
-      this.onSnapShotTapped,
+      this.liveLabel,
+      this.alarmIcon,
+      this.pushToTalkIcon,
+      this.recordIcon,
+      this.snapshotIcon,
       required this.viewSize,
       this.hideDuration = 4000,
       this.doubleTap = false,
@@ -162,17 +162,6 @@ class __FijkPanel3State extends State<_FijkPanel3> {
     }
   }
 
-  Widget _buildAlarmButton() {
-    Icon icon = Icon(Icons.doorbell);
-
-    return IconButton(
-      padding: EdgeInsets.all(0),
-      color: Colors.black,
-      icon: icon,
-      onPressed: widget.onAlarmTapped,
-    );
-  }
-
   Widget _buildFullScreenButton() {
     Icon icon = player.value.fullScreen
         ? Icon(Icons.fullscreen_exit)
@@ -216,29 +205,10 @@ class __FijkPanel3State extends State<_FijkPanel3> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                GestureDetector(
-                  onLongPressStart: (LongPressStartDetails details) {
-                    if (widget.onPushToTalkStart != null) {
-                      widget.onPushToTalkStart!();
-                    }
-                  },
-                  onLongPressEnd: (LongPressEndDetails details) =>
-                      widget.onPushToTalkEnd!(),
-                  child: Icon(Icons.mic, color: Colors.black),
-                ),
-                IconButton(
-                  padding: EdgeInsets.all(0),
-                  color: Colors.black,
-                  icon:
-                      Icon(Icons.record_voice_over_sharp, color: Colors.black),
-                  onPressed: widget.onRecordPressed,
-                ),
-                IconButton(
-                  padding: EdgeInsets.all(0),
-                  color: Colors.black,
-                  icon: Icon(Icons.camera),
-                  onPressed: widget.onSnapShotTapped,
-                ),
+                if (widget.pushToTalkIcon != null) widget.pushToTalkIcon!,
+                if (widget.recordIcon != null) widget.recordIcon!,
+                if (widget.snapshotIcon != null) widget.snapshotIcon!,
+                if (widget.alarmIcon != null) widget.alarmIcon!,
               ],
             ),
           )
@@ -253,16 +223,11 @@ class __FijkPanel3State extends State<_FijkPanel3> {
           children: [
             Column(
               children: [
-                IconButton(
-                  padding: EdgeInsets.all(0),
-                  color: Colors.black,
+                _roundIconButton(
                   icon: Icon(Icons.close),
-                  onPressed: () {
-                    player.exitFullScreen();
-                  },
+                  onPressed: () => player.exitFullScreen(),
                 ),
                 Expanded(child: Container()),
-                _buildAlarmButton()
               ],
             ),
             Expanded(child: centerWidget),
@@ -272,11 +237,11 @@ class __FijkPanel3State extends State<_FijkPanel3> {
     } else {
       return Stack(
         children: [
-          if (_isPlaying)
+          if (_isPlaying && widget.liveLabel != null)
             Positioned(
-              right: 70,
-              top: 10,
-              child: _liveButton(),
+              left: 10,
+              bottom: 10,
+              child: widget.liveLabel!,
             ),
           Positioned(
             bottom: 0,
@@ -323,29 +288,19 @@ class __FijkPanel3State extends State<_FijkPanel3> {
     );
   }
 
-  Widget _liveButton() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-        color: Colors.black.withOpacity(0.6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-            ),
-            SizedBox(width: 4),
-            Text(
-              'Live',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-          ],
+  Widget _roundIconButton(
+      {required Widget icon, required VoidCallback? onPressed}) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const CircleBorder(),
+          shadowColor: Colors.black,
+          backgroundColor: Colors.black.withOpacity(0.4),
+          padding: const EdgeInsets.all(16),
         ),
+        onPressed: onPressed,
+        child: icon,
       ),
     );
   }
