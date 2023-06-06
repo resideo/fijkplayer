@@ -550,7 +550,7 @@ class __InnerFijkViewState extends State<_InnerFijkView> {
         Positioned.fromRect(
             rect: pos,
             child: Container(
-              color: Color(0xFF000000),
+              color: Color(0x00000000),
               child: buildTexture(),
             )),
       ];

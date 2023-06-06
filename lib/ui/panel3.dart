@@ -310,7 +310,9 @@ class __FijkPanel3State extends State<_FijkPanel3> {
       return Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(Colors.white),
+          valueColor: AlwaysStoppedAnimation(
+            Color(0xFF7DAAF7),
+          ),
         ),
       );
     } else if (player.state == FijkState.error) {
