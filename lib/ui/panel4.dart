@@ -27,6 +27,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
   final bool fill = false,
   final int duration = 4000,
   final int forwardBackwardDuration = 5000,
+  final VoidCallback? handleCasting,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -39,6 +40,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
       fill: fill,
       hideDuration: duration,
       forwardBackwardDuration: forwardBackwardDuration,
+      handleCasting: handleCasting,
     );
   };
 }
@@ -52,6 +54,7 @@ class _FijkPanel4 extends StatefulWidget {
   final bool fill;
   final int hideDuration;
   final int forwardBackwardDuration;
+  final VoidCallback? handleCasting;
 
   const _FijkPanel4({
     Key? key,
@@ -62,6 +65,7 @@ class _FijkPanel4 extends StatefulWidget {
     this.hideDuration = 4000,
     required this.texPos,
     required this.forwardBackwardDuration,
+    required this.handleCasting,
   })  : assert(hideDuration > 0 && hideDuration < 10000),
         super(key: key);
 
@@ -235,9 +239,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
       icon: Icon(
         Icons.airplay_rounded,
       ),
-      onPressed: () {
-        // To Do Handle
-      },
+      onPressed: widget.handleCasting,
     );
   }
 
@@ -349,27 +351,13 @@ class __FijkPanel4State extends State<_FijkPanel4> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            height: height > 200 ? 80 : height / 5,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0x88000000), Color(0x00000000)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+            height: height > 80 ? 80 : height / 2,
           ),
           Expanded(
             child: Center(child: centerWidget),
           ),
           Container(
             height: height > 80 ? 80 : height / 2,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0x88000000), Color(0x00000000)],
-                end: Alignment.topCenter,
-                begin: Alignment.bottomCenter,
-              ),
-            ),
             alignment: Alignment.bottomCenter,
             child: _hideStuff
                 ? Container()
@@ -421,7 +409,10 @@ class __FijkPanel4State extends State<_FijkPanel4> {
           width: 30,
           height: 30,
           child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.white)),
+            valueColor: AlwaysStoppedAnimation(
+              Color(0xFF7DAAF7),
+            ),
+          ),
         ),
       );
     } else if (player.state == FijkState.error) {
