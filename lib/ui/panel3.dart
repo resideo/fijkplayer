@@ -38,6 +38,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final bool hasLiveStreamEnded = false,
   final Widget? liveStreamEndedView,
   final Widget? liveStreamErrorView,
+  final Widget? liveStreamErrorViewFS,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -56,6 +57,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       hasLiveStreamEnded: hasLiveStreamEnded,
       liveStreamEndedView: liveStreamEndedView,
       liveStreamErrorView: liveStreamErrorView,
+      liveStreamErrorViewFS: liveStreamErrorViewFS,
       viewSize: viewSize,
       texPos: texturePos,
       fill: fill,
@@ -79,6 +81,7 @@ class _FijkPanel3 extends StatefulWidget {
   final bool hasLiveStreamEnded;
   final Widget? liveStreamEndedView;
   final Widget? liveStreamErrorView;
+  final Widget? liveStreamErrorViewFS;
   final Size viewSize;
   final Rect texPos;
   final bool fill;
@@ -101,6 +104,7 @@ class _FijkPanel3 extends StatefulWidget {
       this.hasLiveStreamEnded = false,
       this.liveStreamEndedView,
       this.liveStreamErrorView,
+      this.liveStreamErrorViewFS,
       required this.viewSize,
       this.doubleTap = false,
       this.snapShot = false,
@@ -299,8 +303,12 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   }
 
   Widget _buildErrorWidget() {
-    if (widget.liveStreamErrorView != null) {
-      return _buildCustomWidgetsFor(view: widget.liveStreamErrorView!);
+    bool fullScreen = player.value.fullScreen;
+    final Widget? errorView =
+        fullScreen ? widget.liveStreamErrorViewFS : widget.liveStreamErrorView;
+
+    if (errorView != null) {
+      return _buildCustomWidgetsFor(view: errorView);
     } else {
       return Container(
         alignment: Alignment.center,
