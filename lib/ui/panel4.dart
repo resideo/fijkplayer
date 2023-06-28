@@ -333,6 +333,44 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     }
   }
 
+  Widget buildFullScreenButton(BuildContext context, double height) {
+    Icon icon = player.value.fullScreen
+        ? Icon(Icons.fullscreen_exit)
+        : Icon(Icons.fullscreen);
+    bool fullScreen = player.value.fullScreen;
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: EdgeInsets.all(fullScreen ? 10 : 5),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color.fromRGBO(
+              0,
+              0,
+              0,
+              0.3,
+            ),
+          ),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints.tightFor(
+              height: 35,
+              width: 35,
+            ),
+            color: Color(0xFFFFFFFF),
+            icon: icon,
+            onPressed: () {
+              player.value.fullScreen
+                  ? player.exitFullScreen()
+                  : player.enterFullScreen();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buildPanel(BuildContext context) {
     double height = panelHeight();
 
@@ -350,11 +388,16 @@ class __FijkPanel4State extends State<_FijkPanel4> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            height: height > 80 ? 80 : height / 2,
+          Stack(
+            children: [
+              Container(
+                height: height > 80 ? 80 : height / 2,
+              ),
+              if (!_hideStuff) buildFullScreenButton(context, height)
+            ],
           ),
           Expanded(
-            child: Center(child: centerWidget),
+            child: centerWidget,
           ),
           Container(
             height: height > 80 ? 80 : height / 2,
