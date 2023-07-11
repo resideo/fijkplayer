@@ -114,6 +114,10 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     _bufferPos = player.bufferPos;
 
     _currentPosSubs = player.onCurrentPosUpdate.listen((v) {
+      if (_currentPos == Duration(seconds: 0) && _hideStuff == true) {
+        print("hidee duration is 1 & hideStuff is true");
+        showHiddenControls();
+      }
       if (_hideStuff == false) {
         setState(() {
           _currentPos = v;
@@ -302,8 +306,10 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget buildBottom(BuildContext context, double height) {
-    if (_duration.inMilliseconds > 0) {
-      return Container(
+    return AnimatedOpacity(
+      opacity: _hideStuff ? 0.0 : 1.0,
+      duration: Duration(milliseconds: 1000),
+      child: Container(
         decoration: BoxDecoration(
           color: Color.fromRGBO(
             0,
@@ -322,15 +328,8 @@ class __FijkPanel4State extends State<_FijkPanel4> {
             buildAirplayButton(context, height)
           ],
         ),
-      );
-    } else {
-      return Row(
-        children: <Widget>[
-          buildPlayButton(context, height),
-          Expanded(child: Container()),
-        ],
-      );
-    }
+      ),
+    );
   }
 
   Widget buildFullScreenButton(BuildContext context, double height) {
@@ -338,33 +337,37 @@ class __FijkPanel4State extends State<_FijkPanel4> {
         ? Icon(Icons.fullscreen_exit)
         : Icon(Icons.fullscreen);
     bool fullScreen = player.value.fullScreen;
-    return Align(
-      alignment: Alignment.topRight,
-      child: Padding(
-        padding: EdgeInsets.all(fullScreen ? 10 : 5),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color.fromRGBO(
-              0,
-              0,
-              0,
-              0.3,
+    return AnimatedOpacity(
+      opacity: _hideStuff ? 0.0 : 1.0,
+      duration: Duration(milliseconds: 1000),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: EdgeInsets.all(fullScreen ? 10 : 5),
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color.fromRGBO(
+                0,
+                0,
+                0,
+                0.3,
+              ),
             ),
-          ),
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints.tightFor(
-              height: 35,
-              width: 35,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints.tightFor(
+                height: 35,
+                width: 35,
+              ),
+              color: Color(0xFFFFFFFF),
+              icon: icon,
+              onPressed: () {
+                player.value.fullScreen
+                    ? player.exitFullScreen()
+                    : player.enterFullScreen();
+              },
             ),
-            color: Color(0xFFFFFFFF),
-            icon: icon,
-            onPressed: () {
-              player.value.fullScreen
-                  ? player.exitFullScreen()
-                  : player.enterFullScreen();
-            },
           ),
         ),
       ),
@@ -374,13 +377,8 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   Widget buildPanel(BuildContext context) {
     double height = panelHeight();
 
-    Widget centerWidget = Container(
-      color: Color(0x00000000),
-    );
+    Widget centerWidget = buildCenterControls();
 
-    if (!_hideStuff) {
-      centerWidget = buildCenterControls();
-    }
     return InkWell(
       onTap: () {
         showHiddenControls();
@@ -393,7 +391,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
               Container(
                 height: height > 80 ? 80 : height / 2,
               ),
-              if (!_hideStuff) buildFullScreenButton(context, height)
+              buildFullScreenButton(context, height)
             ],
           ),
           Expanded(
@@ -402,13 +400,11 @@ class __FijkPanel4State extends State<_FijkPanel4> {
           Container(
             height: height > 80 ? 80 : height / 2,
             alignment: Alignment.bottomCenter,
-            child: _hideStuff
-                ? Container()
-                : Container(
-                    height: height > 80 ? 45 : height / 2,
-                    padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                    child: buildBottom(context, height > 80 ? 40 : height / 2),
-                  ),
+            child: Container(
+              height: height > 80 ? 45 : height / 2,
+              padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
+              child: buildBottom(context, height > 80 ? 40 : height / 2),
+            ),
           )
         ],
       ),
@@ -473,18 +469,20 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget buildCenterControls() {
-    return _hideStuff
-        ? Container()
-        : Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildBackwardButton(context, 50),
-                buildPlayButton(context, 50),
-                buildForwardButton(context, 50),
-              ],
-            ),
-          );
+    return AnimatedOpacity(
+      opacity: _hideStuff ? 0.0 : 1.0,
+      duration: Duration(milliseconds: 1000),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            buildBackwardButton(context, 50),
+            buildPlayButton(context, 50),
+            buildForwardButton(context, 50),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildForwardButton(BuildContext context, double height) {
