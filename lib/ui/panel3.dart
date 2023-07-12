@@ -39,6 +39,8 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final Widget? liveStreamEndedView,
   final Widget? liveStreamErrorView,
   final Widget? liveStreamErrorViewFS,
+  final VoidCallback? onEnterFullScreen,
+  final VoidCallback? onExitFullScreen,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -63,6 +65,8 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       fill: fill,
       doubleTap: doubleTap,
       snapShot: snapShot,
+      onEnterFullScreen: onEnterFullScreen,
+      onExitFullScreen: onExitFullScreen,
     );
   };
 }
@@ -87,6 +91,8 @@ class _FijkPanel3 extends StatefulWidget {
   final bool fill;
   final bool doubleTap;
   final bool snapShot;
+  final VoidCallback? onEnterFullScreen;
+  final VoidCallback? onExitFullScreen;
 
   const _FijkPanel3(
       {Key? key,
@@ -108,6 +114,8 @@ class _FijkPanel3 extends StatefulWidget {
       required this.viewSize,
       this.doubleTap = false,
       this.snapShot = false,
+      this.onEnterFullScreen,
+      this.onExitFullScreen,
       required this.texPos})
       : super(key: key);
 
@@ -226,7 +234,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
           Icons.close,
           color: isDarkTheme ? Colors.white : Colors.black,
         ),
-        onPressed: () => player.exitFullScreen(),
+        onPressed: widget.onExitFullScreen ?? () => player.exitFullScreen(),
         isDarkTheme: isDarkTheme,
       ),
     );
@@ -242,7 +250,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
         padding: EdgeInsets.all(0),
         color: Colors.white,
         icon: icon,
-        onPressed: () => player.enterFullScreen(),
+        onPressed: widget.onEnterFullScreen ?? () => player.enterFullScreen(),
       ),
     );
   }
