@@ -41,6 +41,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final Widget? liveStreamErrorViewFS,
   final VoidCallback? onEnterFullScreen,
   final VoidCallback? onExitFullScreen,
+  final bool showSnapshotAnimation = false,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -67,6 +68,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       snapShot: snapShot,
       onEnterFullScreen: onEnterFullScreen,
       onExitFullScreen: onExitFullScreen,
+      showSnapshotAnimation: showSnapshotAnimation,
     );
   };
 }
@@ -93,6 +95,7 @@ class _FijkPanel3 extends StatefulWidget {
   final bool snapShot;
   final VoidCallback? onEnterFullScreen;
   final VoidCallback? onExitFullScreen;
+  final bool showSnapshotAnimation;
 
   const _FijkPanel3(
       {Key? key,
@@ -116,6 +119,7 @@ class _FijkPanel3 extends StatefulWidget {
       this.snapShot = false,
       this.onEnterFullScreen,
       this.onExitFullScreen,
+      this.showSnapshotAnimation = false,
       required this.texPos})
       : super(key: key);
 
@@ -198,6 +202,8 @@ class __FijkPanel3State extends State<_FijkPanel3> {
           children: [
             _buildCloseButton(),
             _buildFullScreenControls(),
+            if (widget.liveLabel != null)
+              Positioned(left: 20, bottom: 20, child: widget.liveLabel!),
           ],
         );
       } else {
@@ -262,8 +268,8 @@ class __FijkPanel3State extends State<_FijkPanel3> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          if (widget.pushToTalkIcon != null) widget.pushToTalkIcon!,
           if (widget.recordIcon != null) widget.recordIcon!,
+          if (widget.pushToTalkIcon != null) widget.pushToTalkIcon!,
           if (widget.snapshotIcon != null) widget.snapshotIcon!,
           if (widget.alarmIcon != null) widget.alarmIcon!,
         ],
@@ -367,9 +373,23 @@ class __FijkPanel3State extends State<_FijkPanel3> {
 
     ws.add(_buildPanel(context));
 
-    return Positioned.fromRect(
-      rect: rect,
-      child: Stack(children: ws as List<Widget>),
+    return Stack(
+      children: [
+        if (widget.showSnapshotAnimation)
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.white,
+          ),
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: widget.showSnapshotAnimation ? 0 : 1,
+          child: Positioned.fromRect(
+            rect: rect,
+            child: Stack(children: ws as List<Widget>),
+          ),
+        ),
+      ],
     );
   }
 }
