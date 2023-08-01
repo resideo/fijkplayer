@@ -381,13 +381,12 @@ class __FijkPanel3State extends State<_FijkPanel3> {
             width: MediaQuery.of(context).size.width,
             color: Colors.white,
           ),
-        AnimatedOpacity(
-          duration: const Duration(milliseconds: 200),
-          opacity: widget.showSnapshotAnimation ? 0 : 1,
-          child: Positioned.fromRect(
-            rect: rect,
-            child: Stack(children: ws as List<Widget>),
-          ),
+        Positioned.fromRect(
+          rect: rect,
+          child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: widget.showSnapshotAnimation ? 0 : 1,
+              child: Stack(children: ws as List<Widget>)),
         ),
       ],
     );
