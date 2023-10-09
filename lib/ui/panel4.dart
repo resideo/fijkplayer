@@ -28,6 +28,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
   final int duration = 4000,
   final int forwardBackwardDuration = 5000,
   final VoidCallback? handleCasting,
+  final Widget? loaderView,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -41,6 +42,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
       hideDuration: duration,
       forwardBackwardDuration: forwardBackwardDuration,
       handleCasting: handleCasting,
+      loaderView: loaderView,
     );
   };
 }
@@ -55,6 +57,7 @@ class _FijkPanel4 extends StatefulWidget {
   final int hideDuration;
   final int forwardBackwardDuration;
   final VoidCallback? handleCasting;
+  final Widget? loaderView;
 
   const _FijkPanel4({
     Key? key,
@@ -66,6 +69,7 @@ class _FijkPanel4 extends StatefulWidget {
     required this.texPos,
     required this.forwardBackwardDuration,
     required this.handleCasting,
+    this.loaderView,
   })  : assert(hideDuration > 0 && hideDuration < 10000),
         super(key: key);
 
@@ -440,20 +444,22 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     }
   }
 
+  Widget _buildLoader() {
+    return (widget.loaderView != null)
+        ? widget.loaderView!
+        : Container(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(
+                Color(0xFF7DAAF7),
+              ),
+            ),
+          );
+  }
+
   Widget buildStateless() {
     if (player.state == FijkState.asyncPreparing) {
-      return Container(
-        alignment: Alignment.center,
-        child: SizedBox(
-          width: 30,
-          height: 30,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(
-              Color(0xFF7DAAF7),
-            ),
-          ),
-        ),
-      );
+      return _buildLoader();
     } else if (player.state == FijkState.error) {
       return Container(
         alignment: Alignment.center,
