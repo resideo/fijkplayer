@@ -29,6 +29,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
   final int forwardBackwardDuration = 5000,
   final VoidCallback? handleCasting,
   final Widget? loaderView,
+  final Widget? errorView,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -43,6 +44,7 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
       forwardBackwardDuration: forwardBackwardDuration,
       handleCasting: handleCasting,
       loaderView: loaderView,
+      errorView: errorView,
     );
   };
 }
@@ -58,6 +60,7 @@ class _FijkPanel4 extends StatefulWidget {
   final int forwardBackwardDuration;
   final VoidCallback? handleCasting;
   final Widget? loaderView;
+  final Widget? errorView;
 
   const _FijkPanel4({
     Key? key,
@@ -70,6 +73,7 @@ class _FijkPanel4 extends StatefulWidget {
     required this.forwardBackwardDuration,
     required this.handleCasting,
     this.loaderView,
+    this.errorView,
   })  : assert(hideDuration > 0 && hideDuration < 10000),
         super(key: key);
 
@@ -341,6 +345,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
         ? Icon(Icons.fullscreen_exit)
         : Icon(Icons.fullscreen);
     bool fullScreen = player.value.fullScreen;
+
     return AnimatedOpacity(
       opacity: _hideStuff ? 0.0 : 1.0,
       duration: Duration(milliseconds: 1000),
@@ -382,11 +387,16 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     double height = panelHeight();
 
     Widget centerWidget = buildCenterControls();
+    final shouldShowControls = player.state != FijkState.asyncPreparing &&
+        player.state != FijkState.error;
 
-    return InkWell(
-      onTap: () {
-        showHiddenControls();
-      },
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: shouldShowControls
+          ? () {
+              showHiddenControls();
+            }
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -395,21 +405,24 @@ class __FijkPanel4State extends State<_FijkPanel4> {
               Container(
                 height: height > 80 ? 80 : height / 2,
               ),
-              buildFullScreenButton(context, height)
+              if (shouldShowControls || player.value.fullScreen)
+                buildFullScreenButton(context, height)
             ],
           ),
-          Expanded(
-            child: centerWidget,
-          ),
-          Container(
-            height: height > 80 ? 80 : height / 2,
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: height > 80 ? 45 : height / 2,
-              padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
-              child: buildBottom(context, height > 80 ? 40 : height / 2),
+          if (shouldShowControls)
+            Expanded(
+              child: centerWidget,
             ),
-          )
+          if (shouldShowControls)
+            Container(
+              height: height > 80 ? 80 : height / 2,
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: height > 80 ? 45 : height / 2,
+                padding: EdgeInsets.only(left: 8, right: 8, bottom: 5),
+                child: buildBottom(context, height > 80 ? 40 : height / 2),
+              ),
+            )
         ],
       ),
     );
@@ -457,18 +470,24 @@ class __FijkPanel4State extends State<_FijkPanel4> {
           );
   }
 
+  Widget _buildErrorWidget() {
+    return (widget.errorView != null)
+        ? widget.errorView!
+        : Container(
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.error,
+              size: 30,
+              color: Color(0x99FFFFFF),
+            ),
+          );
+  }
+
   Widget buildStateless() {
     if (player.state == FijkState.asyncPreparing) {
       return _buildLoader();
     } else if (player.state == FijkState.error) {
-      return Container(
-        alignment: Alignment.center,
-        child: Icon(
-          Icons.error,
-          size: 30,
-          color: Color(0x99FFFFFF),
-        ),
-      );
+      return _buildErrorWidget();
     } else {
       return Container();
     }
@@ -528,13 +547,12 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     Rect rect = panelRect();
     List ws = <Widget>[];
 
-    if (_statelessTimer != null && _statelessTimer!.isActive) {
-      ws.add(buildStateless());
-    } else if (player.state == FijkState.asyncPreparing) {
-      ws.add(buildStateless());
+    if (player.state == FijkState.asyncPreparing) {
+      ws.add(_buildLoader());
     } else if (player.state == FijkState.error) {
-      ws.add(buildStateless());
+      ws.add(_buildErrorWidget());
     }
+
     ws.add(buildPanel(context));
 
     return Positioned.fromRect(
