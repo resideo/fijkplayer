@@ -234,7 +234,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   Widget _buildCloseButton({bool isDarkTheme = true}) {
     return Positioned(
       left: 10,
-      top: 10,
+      top: Platform.isIOS ? 30 : 10,
       child: _roundIconButton(
         icon: Icon(
           Icons.close,
