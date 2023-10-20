@@ -406,7 +406,13 @@ class __FijkPanel4State extends State<_FijkPanel4> {
                 height: height > 80 ? 80 : height / 2,
               ),
               if (shouldShowControls || player.value.fullScreen)
-                buildFullScreenButton(context, height)
+                Platform.isIOS
+                    ? Positioned(
+                        right: 10,
+                        top: 10,
+                        child: buildFullScreenButton(context, height),
+                      )
+                    : buildFullScreenButton(context, height),
             ],
           ),
           if (shouldShowControls)
