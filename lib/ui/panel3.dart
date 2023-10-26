@@ -31,6 +31,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final Widget? liveLabel,
   final Widget? alarmIcon,
   final Widget? pushToTalkIcon,
+  final Widget? volumeControl,
   final Widget? recordIcon,
   final Widget? snapshotIcon,
   final bool shouldShowLoader = false,
@@ -55,6 +56,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       recordIcon: recordIcon,
       snapshotIcon: snapshotIcon,
       pushToTalkIcon: pushToTalkIcon,
+      volumeControl: volumeControl,
       shouldShowLoader: shouldShowLoader,
       loaderView: loaderView,
       hasLiveStreamEnded: hasLiveStreamEnded,
@@ -82,6 +84,7 @@ class _FijkPanel3 extends StatefulWidget {
   final Widget? pushToTalkIcon;
   final Widget? recordIcon;
   final Widget? snapshotIcon;
+  final Widget? volumeControl;
   final bool shouldShowLoader;
   final Widget? loaderView;
   final bool hasLiveStreamEnded;
@@ -106,6 +109,7 @@ class _FijkPanel3 extends StatefulWidget {
       this.liveLabel,
       this.alarmIcon,
       this.pushToTalkIcon,
+      this.volumeControl,
       this.recordIcon,
       this.snapshotIcon,
       this.shouldShowLoader = false,
@@ -137,6 +141,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   StreamSubscription? _bufferPosSubs;
 
   late StreamController<double> _valController;
+  double _volume = 0.0;
 
   // Is it needed to clear seek data in FijkData (widget.data)
   bool _needClearSeekData = true;
@@ -201,6 +206,12 @@ class __FijkPanel3State extends State<_FijkPanel3> {
         return Stack(
           children: [
             _buildCloseButton(),
+            if (_isPlaying && widget.volumeControl != null)
+              Positioned(
+                left: 15,
+                top: Platform.isIOS ? 90 : 70,
+                child: widget.volumeControl!,
+              ),
             _buildFullScreenControls(),
             if (widget.liveLabel != null)
               Positioned(left: 20, bottom: 20, child: widget.liveLabel!),
@@ -211,6 +222,8 @@ class __FijkPanel3State extends State<_FijkPanel3> {
           children: [
             if (_isPlaying && widget.liveLabel != null)
               Positioned(left: 10, bottom: 10, child: widget.liveLabel!),
+            if (_isPlaying && widget.volumeControl != null)
+              Positioned(right: 36, bottom: 4, child: widget.volumeControl!),
             _buildFullScreenButton(),
           ],
         );
