@@ -193,7 +193,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   Widget _buildPanel(BuildContext context) {
     bool fullScreen = player.value.fullScreen;
 
-    if (widget.shouldShowLoader) {
+    if (widget.shouldShowLoader && !widget.hasLiveStreamEnded) {
       return _buildLoader();
     } else if (widget.hasLiveStreamEnded) {
       return _buildCustomWidgetsFor(
