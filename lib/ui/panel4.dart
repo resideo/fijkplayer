@@ -409,7 +409,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
                 Platform.isIOS
                     ? Positioned(
                         right: 10,
-                        top: 10,
+                        top: 30,
                         child: buildFullScreenButton(context, height),
                       )
                     : buildFullScreenButton(context, height),
