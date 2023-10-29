@@ -389,7 +389,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
     Widget centerWidget = buildCenterControls();
     final shouldShowControls = player.state != FijkState.asyncPreparing &&
         player.state != FijkState.error;
-
+    bool fullScreen = player.value.fullScreen;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: shouldShowControls
@@ -406,7 +406,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
                 height: height > 80 ? 80 : height / 2,
               ),
               if (shouldShowControls || player.value.fullScreen)
-                Platform.isIOS
+                Platform.isIOS && fullScreen
                     ? Positioned(
                         right: 10,
                         top: 30,
