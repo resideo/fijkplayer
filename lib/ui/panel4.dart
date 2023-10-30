@@ -422,6 +422,8 @@ class __FijkPanel4State extends State<_FijkPanel4> {
           if (shouldShowControls)
             Container(
               height: height > 80 ? 80 : height / 2,
+              padding:
+                  EdgeInsets.only(bottom: player.value.fullScreen ? 16 : 0),
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: height > 80 ? 45 : height / 2,
