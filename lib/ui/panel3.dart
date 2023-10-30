@@ -40,6 +40,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
   final Widget? liveStreamEndedView,
   final Widget? liveStreamErrorView,
   final Widget? liveStreamErrorViewFS,
+  final Widget? enterFullScreenControl,
   final VoidCallback? onEnterFullScreen,
   final VoidCallback? onExitFullScreen,
   final bool showSnapshotAnimation = false,
@@ -68,6 +69,7 @@ FijkPanelWidgetBuilder fijkPanel3Builder({
       fill: fill,
       doubleTap: doubleTap,
       snapShot: snapShot,
+      enterFullScreenControl: enterFullScreenControl,
       onEnterFullScreen: onEnterFullScreen,
       onExitFullScreen: onExitFullScreen,
       showSnapshotAnimation: showSnapshotAnimation,
@@ -96,6 +98,7 @@ class _FijkPanel3 extends StatefulWidget {
   final bool fill;
   final bool doubleTap;
   final bool snapShot;
+  final Widget? enterFullScreenControl;
   final VoidCallback? onEnterFullScreen;
   final VoidCallback? onExitFullScreen;
   final bool showSnapshotAnimation;
@@ -121,6 +124,7 @@ class _FijkPanel3 extends StatefulWidget {
       required this.viewSize,
       this.doubleTap = false,
       this.snapShot = false,
+      this.enterFullScreenControl,
       this.onEnterFullScreen,
       this.onExitFullScreen,
       this.showSnapshotAnimation = false,
@@ -206,12 +210,6 @@ class __FijkPanel3State extends State<_FijkPanel3> {
         return Stack(
           children: [
             _buildCloseButton(),
-            if (_isPlaying && widget.volumeControl != null)
-              Positioned(
-                left: 15,
-                top: Platform.isIOS ? 90 : 70,
-                child: widget.volumeControl!,
-              ),
             _buildFullScreenControls(),
             if (widget.liveLabel != null)
               Positioned(left: 20, bottom: 20, child: widget.liveLabel!),
@@ -222,9 +220,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
           children: [
             if (_isPlaying && widget.liveLabel != null)
               Positioned(left: 10, bottom: 10, child: widget.liveLabel!),
-            if (_isPlaying && widget.volumeControl != null)
-              Positioned(right: 36, bottom: 4, child: widget.volumeControl!),
-            _buildFullScreenButton(),
+            _buildPortraitBottom(),
           ],
         );
       }
@@ -260,15 +256,18 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   }
 
   Widget _buildFullScreenButton() {
-    Icon icon = Icon(Icons.fullscreen);
+    if (widget.enterFullScreenControl != null) {
+      return widget.enterFullScreenControl!;
+    }
 
+    ///Default full screen button
     return Positioned(
-      right: 8,
+      right: 4,
       bottom: 4,
       child: IconButton(
         padding: EdgeInsets.all(0),
         color: Colors.white,
-        icon: icon,
+        icon: Icon(Icons.fullscreen),
         onPressed: widget.onEnterFullScreen ?? () => player.enterFullScreen(),
       ),
     );
@@ -281,10 +280,26 @@ class __FijkPanel3State extends State<_FijkPanel3> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          if (widget.volumeControl != null) widget.volumeControl!,
           if (widget.recordIcon != null) widget.recordIcon!,
           if (widget.pushToTalkIcon != null) widget.pushToTalkIcon!,
           if (widget.snapshotIcon != null) widget.snapshotIcon!,
           if (widget.alarmIcon != null) widget.alarmIcon!,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPortraitBottom({bool shouldShowVolumeControl = true}) {
+    return Positioned(
+      right: 4,
+      bottom: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          if (shouldShowVolumeControl && widget.volumeControl != null)
+            widget.volumeControl!,
+          _buildFullScreenButton()
         ],
       ),
     );
@@ -323,7 +338,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
             width: MediaQuery.of(context).size.width,
             child: view,
           ),
-          _buildFullScreenButton()
+          _buildPortraitBottom(shouldShowVolumeControl: false)
         ],
       );
     }
