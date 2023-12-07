@@ -51,3 +51,4 @@ part 'ui/panel3.dart';
 part 'ui/panel4.dart';
 part 'ui/slider.dart';
 part 'ui/volume.dart';
+part 'model/clip_player_model.dart';

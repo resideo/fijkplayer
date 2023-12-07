@@ -28,8 +28,9 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
   final int duration = 4000,
   final int forwardBackwardDuration = 5000,
   final VoidCallback? handleCasting,
-  final Widget? loaderView,
-  final Widget? errorView,
+  final VoidCallback? onNextClip,
+  final VoidCallback? onPreviousClip,
+  final ClipPlayerModel? clipPlayerModel,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -43,8 +44,9 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
       hideDuration: duration,
       forwardBackwardDuration: forwardBackwardDuration,
       handleCasting: handleCasting,
-      loaderView: loaderView,
-      errorView: errorView,
+      onNextClip: onNextClip,
+      onPreviousClip: onPreviousClip,
+      clipPlayerModel: clipPlayerModel,
     );
   };
 }
@@ -59,8 +61,10 @@ class _FijkPanel4 extends StatefulWidget {
   final int hideDuration;
   final int forwardBackwardDuration;
   final VoidCallback? handleCasting;
-  final Widget? loaderView;
-  final Widget? errorView;
+
+  final VoidCallback? onNextClip;
+  final VoidCallback? onPreviousClip;
+  final ClipPlayerModel? clipPlayerModel;
 
   const _FijkPanel4({
     Key? key,
@@ -72,8 +76,9 @@ class _FijkPanel4 extends StatefulWidget {
     required this.texPos,
     required this.forwardBackwardDuration,
     required this.handleCasting,
-    this.loaderView,
-    this.errorView,
+    this.onNextClip,
+    this.onPreviousClip,
+    this.clipPlayerModel,
   })  : assert(hideDuration > 0 && hideDuration < 10000),
         super(key: key);
 
@@ -230,16 +235,19 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget buildPlayButton(BuildContext context, double height) {
-    Icon icon = (player.state == FijkState.started)
-        ? Icon(Icons.pause)
-        : Icon(Icons.play_arrow);
+    Widget icon = (player.state == FijkState.started)
+        ? widget.clipPlayerModel?.pauseClipIcon ?? Icon(Icons.pause)
+        : widget.clipPlayerModel?.playClipIcon ?? Icon(Icons.play_arrow);
 
-    return IconButton(
-      padding: EdgeInsets.all(0),
-      iconSize: height * 0.8,
-      color: Color(0xFFFFFFFF),
-      icon: icon,
-      onPressed: playOrPause,
+    return GestureDetector(
+      onTap: playOrPause,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: player.value.fullScreen ? 20 : 15,
+        ),
+        height: height * 0.7,
+        child: icon,
+      ),
     );
   }
 
@@ -466,8 +474,8 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget _buildLoader() {
-    return (widget.loaderView != null)
-        ? widget.loaderView!
+    return (widget.clipPlayerModel?.loaderView != null)
+        ? widget.clipPlayerModel!.loaderView!
         : Container(
             alignment: Alignment.center,
             child: CircularProgressIndicator(
@@ -479,8 +487,8 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget _buildErrorWidget() {
-    return (widget.errorView != null)
-        ? widget.errorView!
+    return (widget.clipPlayerModel?.errorView != null)
+        ? widget.clipPlayerModel!.errorView!
         : Container(
             alignment: Alignment.center,
             child: Icon(
@@ -509,9 +517,11 @@ class __FijkPanel4State extends State<_FijkPanel4> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            buildPreviousClipButton(context, 50),
             buildBackwardButton(context, 50),
             buildPlayButton(context, 50),
             buildForwardButton(context, 50),
+            buildNextClipButton(context, 50)
           ],
         ),
       ),
@@ -519,34 +529,66 @@ class __FijkPanel4State extends State<_FijkPanel4> {
   }
 
   Widget buildForwardButton(BuildContext context, double height) {
-    return IconButton(
-      padding: EdgeInsets.all(0),
-      iconSize: height * 0.6,
-      color: Color(0xFFFFFFFF),
-      icon: Icon(
-        Icons.forward_10_rounded,
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         player.seekTo(
           _currentPos.inMilliseconds + widget.forwardBackwardDuration,
         );
       },
+      child: Container(
+        padding: EdgeInsets.all(0),
+        height: height * 0.7,
+        child: widget.clipPlayerModel?.forwardIcon ??
+            Icon(
+              Icons.forward_10_rounded,
+            ),
+      ),
     );
   }
 
   Widget buildBackwardButton(BuildContext context, double height) {
-    return IconButton(
-      padding: EdgeInsets.all(0),
-      iconSize: height * 0.6,
-      color: Color(0xFFFFFFFF),
-      icon: Icon(
-        Icons.replay_10_rounded,
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         player.seekTo(
           _currentPos.inMilliseconds - widget.forwardBackwardDuration,
         );
       },
+      child: Container(
+        padding: EdgeInsets.all(0),
+        height: height * 0.7,
+        child: widget.clipPlayerModel?.backwardIcon ??
+            Icon(
+              Icons.replay_10_rounded,
+            ),
+      ),
+    );
+  }
+
+  Widget buildPreviousClipButton(BuildContext context, double height) {
+    return GestureDetector(
+      onTap: widget.onPreviousClip,
+      child: Container(
+        padding:
+            EdgeInsets.symmetric(horizontal: player.value.fullScreen ? 20 : 15),
+        height: height * 0.7,
+        child: widget.onPreviousClip != null
+            ? widget.clipPlayerModel?.previousClipIcon
+            : SizedBox.shrink(),
+      ),
+    );
+  }
+
+  Widget buildNextClipButton(BuildContext context, double height) {
+    return GestureDetector(
+      onTap: widget.onNextClip,
+      child: Container(
+        padding:
+            EdgeInsets.symmetric(horizontal: player.value.fullScreen ? 20 : 15),
+        height: height * 0.7,
+        child: widget.onNextClip != null
+            ? widget.clipPlayerModel?.nextClipIcon
+            : SizedBox.shrink(),
+      ),
     );
   }
 
