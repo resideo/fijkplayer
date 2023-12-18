@@ -265,11 +265,17 @@ class __FijkPanel4State extends State<_FijkPanel4> {
 
   Widget buildTotalDurationTimeText(BuildContext context, double height) {
     String text = "${_duration2String(_duration)}";
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 12,
-        color: Color.fromARGB(255, 183, 179, 179),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 5,
+        right: player.value.fullScreen ? 20 : 15,
+      ), // added right paddding as airplay is removed
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          color: Color.fromARGB(255, 183, 179, 179),
+        ),
       ),
     );
   }
@@ -341,7 +347,7 @@ class __FijkPanel4State extends State<_FijkPanel4> {
             buildCurrentPositionText(context, height),
             Expanded(child: buildSlider(context)),
             buildTotalDurationTimeText(context, height),
-            buildAirplayButton(context, height)
+            //buildAirplayButton(context, height)
           ],
         ),
       ),
