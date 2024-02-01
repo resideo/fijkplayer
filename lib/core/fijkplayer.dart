@@ -524,7 +524,10 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
           FijkLog.i("$this state changed to $fpState <= $oldState");
           FijkException? fijkException =
               (fpState != FijkState.error) ? FijkException.noException : null;
-          if (newStateId == FijkState.prepared.index) {
+
+          if (fpState == FijkState.prepared && state == FijkState.started) {
+            FijkLog.e("Invalid state: $fpState updated after $state");
+          } else if (newStateId == FijkState.prepared.index) {
             _setValue(value.copyWith(
                 prepared: true, state: fpState, exception: fijkException));
           } else if (newStateId < FijkState.prepared.index) {
