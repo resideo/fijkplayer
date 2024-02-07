@@ -225,7 +225,9 @@ class _FijkViewState extends State<FijkView> {
     if (widget.fs) {
       if (value.fullScreen && !_fullScreen) {
         _fullScreen = true;
-        await _pushFullScreenWidget(context);
+        if (FijkPlayer.shouldPushAnotherFs) {
+          await _pushFullScreenWidget(context);
+        }
       } else if (_fullScreen && !value.fullScreen) {
         Navigator.of(context).pop();
         _fullScreen = false;
@@ -309,6 +311,9 @@ class _FijkViewState extends State<FijkView> {
         overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     if (changed) {
       if (_vWidth >= _vHeight) {
+        if (!FijkPlayer.shouldPushAnotherFs) {
+          FijkPlayer.shouldPushAnotherFs = true;
+        }
         await FijkPlugin.setOrientationPortrait();
       } else {
         await FijkPlugin.setOrientationLandscape();

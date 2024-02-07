@@ -572,7 +572,12 @@ class __FijkPanel4State extends State<_FijkPanel4> {
 
   Widget buildPreviousClipButton(BuildContext context, double height) {
     return GestureDetector(
-      onTap: widget.onPreviousClip,
+      onTap: () {
+        if (player.value.fullScreen) {
+          FijkPlayer.shouldPushAnotherFs = false;
+        }
+        widget.onPreviousClip?.call();
+      },
       child: Container(
         padding:
             EdgeInsets.symmetric(horizontal: player.value.fullScreen ? 20 : 15),
@@ -586,7 +591,12 @@ class __FijkPanel4State extends State<_FijkPanel4> {
 
   Widget buildNextClipButton(BuildContext context, double height) {
     return GestureDetector(
-      onTap: widget.onNextClip,
+      onTap: () {
+        if (player.value.fullScreen) {
+          FijkPlayer.shouldPushAnotherFs = false;
+        }
+        widget.onNextClip?.call();
+      },
       child: Container(
         padding:
             EdgeInsets.symmetric(horizontal: player.value.fullScreen ? 20 : 15),

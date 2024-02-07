@@ -40,6 +40,8 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
 
   static Iterable<FijkPlayer> get all => _allInstance.values;
 
+  static bool shouldPushAnotherFs = true;
+
   /// Return the player unique id.
   ///
   /// Each public method in [FijkPlayer] `await` the id value firstly.
