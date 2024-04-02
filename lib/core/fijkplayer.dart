@@ -551,10 +551,15 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
         }
         break;
       case 'freeze':
-        bool value = map['value'] ?? false;
-        _buffering = value;
-        _bufferStateController.add(value);
-        FijkLog.d("$this freeze ${value ? "start" : "end"}");
+        bool mapValue = map['value'] ?? false;
+        _buffering = mapValue;
+        _bufferStateController.add(mapValue);
+        FijkLog.i("$this freeze ${mapValue ? "start" : "end"}");
+
+        if (_buffering && isRtspDataSource()) {
+          restartPlayerAfterFreeze();
+        }
+
         break;
       case 'buffering':
         int head = map['head'] ?? 0;
@@ -583,6 +588,36 @@ class FijkPlayer extends ChangeNotifier implements ValueListenable<FijkValue> {
       default:
         break;
     }
+  }
+
+  bool isRtspDataSource() {
+    try {
+      if (_dataSource != null) {
+        final uri = Uri.parse(_dataSource!);
+
+        return uri.scheme == 'rtsps';
+      }
+
+      return false;
+    } on FormatException {
+      return false; //Invalid URL format
+    }
+  }
+
+  void restartPlayerAfterFreeze() async {
+    Future.delayed(Duration(milliseconds: 200), () async {
+      FijkLog.i(
+          'Freezed: $_buffering, rendering audio:${value.audioRenderStart}, video:${value.videoRenderStart}');
+
+      /// Restart from freezed state if the player freezed before audio and video rendering started
+      if (_buffering && !(value.audioRenderStart && value.videoRenderStart)) {
+        FijkLog.i('Restart from freezed state');
+        await reset();
+        _startFromAnyState();
+      } else {
+        FijkLog.i('Player not in freezed state before video started playing');
+      }
+    });
   }
 
   void _errorListener(Object obj) {
