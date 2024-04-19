@@ -306,16 +306,22 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   }
 
   Widget _buildLoader() {
-    return (widget.loaderView != null)
-        ? widget.loaderView!
-        : Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(
-                Color(0xFF7DAAF7),
+    bool fullScreen = player.value.fullScreen;
+    return Stack(
+      children: [
+        (widget.loaderView != null)
+            ? widget.loaderView!
+            : Container(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                    Color(0xFF7DAAF7),
+                  ),
+                ),
               ),
-            ),
-          );
+        if (fullScreen) _buildCloseButton(),
+      ],
+    );
   }
 
   Widget _buildCustomWidgetsFor({required Widget view}) {
