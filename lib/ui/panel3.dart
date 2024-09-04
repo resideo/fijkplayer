@@ -145,7 +145,7 @@ class __FijkPanel3State extends State<_FijkPanel3> {
   StreamSubscription? _bufferPosSubs;
 
   late StreamController<double> _valController;
-  double _volume = 0.0;
+  //double _volume = 0.0;
 
   // Is it needed to clear seek data in FijkData (widget.data)
   bool _needClearSeekData = true;

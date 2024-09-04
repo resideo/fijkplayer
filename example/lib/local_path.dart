@@ -120,7 +120,7 @@ class _LocalPathState extends State<LocalPath> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ListTile(
-          title: Text(current != null ? current.path : "/",
+          title: Text(current.path,
               style: TextStyle(
                 color: Theme.of(context).dividerColor,
                 fontSize: 14,
