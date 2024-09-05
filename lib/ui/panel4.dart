@@ -31,6 +31,8 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
   final VoidCallback? onNextClip,
   final VoidCallback? onPreviousClip,
   final ClipPlayerModel? clipPlayerModel,
+  final VoidCallback? onEnterFullScreen,
+  final VoidCallback? onExitFullScreen,
 }) {
   return (FijkPlayer player, FijkData data, BuildContext context, Size viewSize,
       Rect texturePos) {
@@ -47,6 +49,8 @@ FijkPanelWidgetBuilder fijkPanel4Builder({
       onNextClip: onNextClip,
       onPreviousClip: onPreviousClip,
       clipPlayerModel: clipPlayerModel,
+      onEnterFullScreen: onEnterFullScreen,
+      onExitFullScreen: onExitFullScreen,
     );
   };
 }
@@ -65,6 +69,8 @@ class _FijkPanel4 extends StatefulWidget {
   final VoidCallback? onNextClip;
   final VoidCallback? onPreviousClip;
   final ClipPlayerModel? clipPlayerModel;
+  final VoidCallback? onEnterFullScreen;
+  final VoidCallback? onExitFullScreen;
 
   const _FijkPanel4({
     Key? key,
@@ -79,6 +85,8 @@ class _FijkPanel4 extends StatefulWidget {
     this.onNextClip,
     this.onPreviousClip,
     this.clipPlayerModel,
+    this.onEnterFullScreen,
+    this.onExitFullScreen,
   })  : assert(hideDuration > 0 && hideDuration < 10000),
         super(key: key);
 
@@ -386,9 +394,19 @@ class __FijkPanel4State extends State<_FijkPanel4> {
               color: Color(0xFFFFFFFF),
               icon: icon,
               onPressed: () {
-                player.value.fullScreen
-                    ? player.exitFullScreen()
-                    : player.enterFullScreen();
+                if (player.value.fullScreen) {
+                  if (widget.onExitFullScreen != null) {
+                    widget.onExitFullScreen?.call();
+                  } else {
+                    player.exitFullScreen();
+                  }
+                } else {
+                  if (widget.onEnterFullScreen != null) {
+                    widget.onEnterFullScreen?.call();
+                  } else {
+                    player.enterFullScreen();
+                  }
+                }
               },
             ),
           ),
