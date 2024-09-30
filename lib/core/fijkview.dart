@@ -229,8 +229,10 @@ class _FijkViewState extends State<FijkView> {
           await _pushFullScreenWidget(context);
         }
       } else if (_fullScreen && !value.fullScreen) {
-        Navigator.of(context).pop();
-        _fullScreen = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pop();
+          _fullScreen = false;
+        });
       }
 
       // save width and height to make judgement about whether to
