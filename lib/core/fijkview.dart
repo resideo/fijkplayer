@@ -33,6 +33,8 @@ part of fijkplayer;
 typedef FijkPanelWidgetBuilder = Widget Function(FijkPlayer player,
     FijkData data, BuildContext context, Size viewSize, Rect texturePos);
 
+typedef FijkViewWrapper = Widget Function(BuildContext context, Widget? child);
+
 /// How a video should be inscribed into [FijkView].
 ///
 /// See also [BoxFit]
@@ -126,6 +128,7 @@ class FijkView extends StatefulWidget {
     this.cover,
     this.fs = true,
     this.onDispose,
+    this.wrapper,
   });
 
   /// The player that need display video by this [FijkView].
@@ -169,6 +172,8 @@ class FijkView extends StatefulWidget {
   /// If [fs] is false, FijkView never make response to the change of [FijkValue.fullScreen].
   /// But you can still call [FijkPlayer.enterFullScreen] and [FijkPlayer.exitFullScreen] and make your own full screen pages.
   final bool fs;
+
+  final FijkViewWrapper? wrapper;
 
   @override
   createState() => _FijkViewState();
@@ -272,12 +277,22 @@ class _FijkViewState extends State<FijkView> {
       builder: (BuildContext context, Widget? child) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          body: _InnerFijkView(
-            fijkViewState: this,
-            fullScreen: true,
-            cover: widget.cover,
-            data: _fijkData,
-          ),
+          body: widget.wrapper != null
+              ? widget.wrapper!(
+                  context,
+                  _InnerFijkView(
+                    fijkViewState: this,
+                    fullScreen: true,
+                    cover: widget.cover,
+                    data: _fijkData,
+                  ),
+                )
+              : _InnerFijkView(
+                  fijkViewState: this,
+                  fullScreen: true,
+                  cover: widget.cover,
+                  data: _fijkData,
+                ),
         );
       },
     );
@@ -333,11 +348,27 @@ class _FijkViewState extends State<FijkView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_fullScreen) {
+      return Container(
+        width: widget.width,
+        height: widget.height,
+        child: Container(),
+      );
+    }
+
     return Container(
       width: widget.width,
       height: widget.height,
-      child: _fullScreen
-          ? Container()
+      child: widget.wrapper != null
+          ? widget.wrapper!(
+              context,
+              _InnerFijkView(
+                fijkViewState: this,
+                fullScreen: false,
+                cover: widget.cover,
+                data: _fijkData,
+              ),
+            )
           : _InnerFijkView(
               fijkViewState: this,
               fullScreen: false,
