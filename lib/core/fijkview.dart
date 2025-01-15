@@ -179,7 +179,7 @@ class FijkView extends StatefulWidget {
   createState() => _FijkViewState();
 }
 
-class _FijkViewState extends State<FijkView> {
+class _FijkViewState extends State<FijkView> with LoggableObject {
   int _textureId = -1;
   double _vWidth = -1;
   double _vHeight = -1;
@@ -210,10 +210,10 @@ class _FijkViewState extends State<FijkView> {
   void _setupTexture() async {
     final int? vid = await widget.player.setupSurface();
     if (vid == null) {
-      FijkLog.e("failed to set surface");
+      logger.info("failed to set surface");
       return;
     }
-    FijkLog.i("view setup, vid:" + vid.toString());
+    logger.info("view setup, vid:" + vid.toString());
     if (mounted) {
       setState(() {
         _textureId = vid;
@@ -313,12 +313,12 @@ class _FijkViewState extends State<FijkView> {
         overlays: []);
     bool changed = false;
     var orientation = MediaQuery.of(context).orientation;
-    FijkLog.d("start enter fullscreen. orientation:$orientation");
+    logger.info("start enter fullscreen. orientation:$orientation");
     if (_vWidth >= _vHeight) {
       if (MediaQuery.of(context).orientation == Orientation.portrait)
         changed = await FijkPlugin.setOrientationLandscape();
     }
-    FijkLog.d("screen orientation changed:$changed");
+    logger.info("screen orientation changed:$changed");
 
     await Navigator.of(context).push(route);
     _fullScreen = false;

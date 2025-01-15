@@ -13,6 +13,12 @@ dependencies:
   flutter:
     sdk: flutter
 
+  lantern_logger:
+    git:
+      url: git@github.com:resideo/lantern_flutter.git
+      ref: develop
+      path: packages/lantern_logger
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

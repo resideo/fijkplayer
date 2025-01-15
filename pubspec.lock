@@ -59,6 +59,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  lantern_logger:
+    dependency: "direct main"
+    description:
+      path: "packages/lantern_logger"
+      ref: develop
+      resolved-ref: "5b46e9cedb37e6fcdc6347399531d36a6b154378"
+      url: "git@github.com:resideo/lantern_flutter.git"
+    source: git
+    version: "1.0.0"
   leak_tracker:
     dependency: transitive
     description:

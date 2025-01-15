@@ -22,7 +22,7 @@
 
 part of fijkplayer;
 
-class FijkOption {
+class FijkOption with LoggableObject {
   final Map<int, Map<String, dynamic>> _options = HashMap();
 
   final Map<String, dynamic> _hostOption = HashMap();
@@ -48,7 +48,7 @@ class FijkOption {
     options[3] = Map.from(_swsOption);
     options[4] = Map.from(_playerOption);
     options[5] = Map.from(_swrOption);
-    FijkLog.i("FijkOption cloned");
+    logger.info("FijkOption cloned");
     return options;
   }
 
@@ -66,9 +66,9 @@ class FijkOption {
   void setHostOption(String key, dynamic value) {
     if (value is String || value is int) {
       _hostOption[key] = value;
-      FijkLog.v("FijkOption.setHostOption key:$key, value :$value");
+      logger.info("FijkOption.setHostOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setHostOption with invalid value:$value");
+      logger.info("FijkOption.setHostOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
@@ -78,9 +78,9 @@ class FijkOption {
   void setPlayerOption(String key, dynamic value) {
     if (value is String || value is int) {
       _playerOption[key] = value;
-      FijkLog.v("FijkOption.setPlayerOption key:$key, value :$value");
+      logger.info("FijkOption.setPlayerOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setPlayerOption with invalid value:$value");
+      logger.info("FijkOption.setPlayerOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
@@ -90,9 +90,9 @@ class FijkOption {
   void setFormatOption(String key, dynamic value) {
     if (value is String || value is int) {
       _formatOption[key] = value;
-      FijkLog.v("FijkOption.setFormatOption key:$key, value :$value");
+      logger.info("FijkOption.setFormatOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setFormatOption with invalid value:$value");
+      logger.info("FijkOption.setFormatOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
@@ -102,9 +102,9 @@ class FijkOption {
   void setCodecOption(String key, dynamic value) {
     if (value is String || value is int) {
       _codecOption[key] = value;
-      FijkLog.v("FijkOption.setCodecOption key:$key, value :$value");
+      logger.info("FijkOption.setCodecOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setCodecOption with invalid value:$value");
+      logger.info("FijkOption.setCodecOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
@@ -114,9 +114,9 @@ class FijkOption {
   void setSwsOption(String key, dynamic value) {
     if (value is String || value is int) {
       _swsOption[key] = value;
-      FijkLog.v("FijkOption.setSwsOption key:$key, value :$value");
+      logger.info("FijkOption.setSwsOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setSwsOption with invalid value:$value");
+      logger.info("FijkOption.setSwsOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
@@ -126,9 +126,9 @@ class FijkOption {
   void setSwrOption(String key, dynamic value) {
     if (value is String || value is int) {
       _swrOption[key] = value;
-      FijkLog.v("FijkOption.setSwrOption key:$key, value :$value");
+      logger.info("FijkOption.setSwrOption key:$key, value :$value");
     } else {
-      FijkLog.e("FijkOption.setSwrOption with invalid value:$value");
+      logger.info("FijkOption.setSwrOption with invalid value:$value");
       throw ArgumentError.value(value, "value", "Must be int or String");
     }
   }
